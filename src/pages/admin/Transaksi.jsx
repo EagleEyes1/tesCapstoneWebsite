@@ -1,9 +1,6 @@
 import * as React from 'react';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Modal from '@mui/material/Modal';
+import { useEffect } from 'react';
 import MenuItem from '@mui/material/MenuItem';
-import Iconify from '../../components/Admin-Component/iconify/Iconify';
 import Form from 'react-bootstrap/Form';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -14,29 +11,62 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
 import { tableCellClasses } from '@mui/material/TableCell';
-
-
 import './Transaksi.css'
+import { Container, Typography } from '@mui/material';
+import { useSelector, useDispatch } from "react-redux"
+import Image from 'react-bootstrap/Image'
+import Menu from '@mui/material/Menu';
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
+import moment from "moment/moment";
+import { getAllTransactions } from '../../store/features/TransactionSlice';
+import { useState } from 'react';
 
-import { Container, Stack, Typography } from '@mui/material';
+// function createData(index, idPengguna, idProduk, totalPembayaran, statusBayar, metodePembayaran, statusTransaksi, tanggalPembayaran) {
+//   return { index, idPengguna, idProduk, totalPembayaran, statusBayar, metodePembayaran, statusTransaksi, tanggalPembayaran };
+// }
 
-function createData(index, idPengguna, idProduk, totalPembayaran, statusBayar, metodePembayaran, statusTransaksi, tanggalPembayaran) {
-  return { index, idPengguna, idProduk, totalPembayaran, statusBayar, metodePembayaran, statusTransaksi, tanggalPembayaran };
-}
-
-const rows = [
-  createData('01', 'USER0001', 'PLNP100000', 30000, 'Terbayar', 'Gopay', 'Dibuat', '17/11/2022'),
-  createData('02', 'USER0002', 'RGPD', 11000, 'Terbayar', 'Gopay', 'Dibuat', '01/11/2022'),
-  createData('03', 'USER0003', 'TRIP10000', 10000, 'Tidak Terbayar', 'Ovo', 'Diperbarui', '02/11/2022'),
-];
+// const rows = [
+//   createData('01', 'USER0001', 'PLNP100000', 30000, 'Terbayar', 'Gopay', 'Dibuat', '17/11/2022'),
+//   createData('02', 'USER0002', 'RGPD', 11000, 'Terbayar', 'Gopay', 'Dibuat', '01/11/2022'),
+//   createData('03', 'USER0003', 'TRIP10000', 10000, 'Tidak Terbayar', 'Ovo', 'Diperbarui', '02/11/2022'),
+// ];
 
 const Transaksi = () => {
+
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(getAllTransactions())
+  }, [dispatch])
+
+  const [success, setSuccess] = useState("SUCCESS")
+  const [pending, setPending] = useState("PENDING")
+
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
       backgroundColor: "#396EB0",
       color: "#EBF1F7",
     },
   }));
+
+  const transactions = useSelector((state) => state.TransactionSlice.data)
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const closeMenu = () => {
+    setModalShow(true)
+    setAnchorEl(null);
+  }
+
+  const [modalShow, setModalShow] = React.useState(false);
   return (
     <>
       <Container>
@@ -64,39 +94,97 @@ const Transaksi = () => {
             <TableHead className="theadcell">
               <TableRow className="theadcell">
                 <StyledTableCell style={{ borderRadius: "10px 0 0 0" }}>#</StyledTableCell>
-                <StyledTableCell align="right">ID Pengguna</StyledTableCell>
-                <StyledTableCell align="right">ID Produk</StyledTableCell>
-                <StyledTableCell align="right">Total Pembayaran</StyledTableCell>
-                <StyledTableCell align="right">Status Pembayaran</StyledTableCell>
-                <StyledTableCell align="right">Metode Pembayaran</StyledTableCell>
-                <StyledTableCell align="right">Status</StyledTableCell>
-                <StyledTableCell style={{ borderRadius: "0 10px 0 0" }} align="right">Tanggal Pembayaran&nbsp;(g)</StyledTableCell>
+                <StyledTableCell align="left">Email Pengguna</StyledTableCell>
+                <StyledTableCell align="left">Kode Produk</StyledTableCell>
+                <StyledTableCell align="left">Total Pembayaran</StyledTableCell>
+                <StyledTableCell align="left">Status Pembayaran</StyledTableCell>
+                <StyledTableCell align="left">Metode Pembayaran</StyledTableCell>
+                <StyledTableCell align="left">Status</StyledTableCell>
+                <StyledTableCell style={{ borderRadius: "0 10px 0 0" }} colSpan={2} align="left">Tanggal Pembayaran</StyledTableCell>
+                {/* <StyledTableCell style={{ borderRadius: "0 10px 0 0" }} align="left">&nbsp;</StyledTableCell> */}
               </TableRow>
             </TableHead>
             <TableBody>
-              {rows.map((row) => (
+              {transactions?.map((row, index) => (
                 <TableRow
-                  key={row.index}
+                  key={row.id}
                   sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-
                 >
                   <TableCell component="th" scope="row">
-                    {row.index}
+                    {index + 1}
                   </TableCell>
-                  <TableCell align="right">{row.idPengguna}</TableCell>
-                  <TableCell align="right">{row.idProduk}</TableCell>
-                  <TableCell align="right">{row.totalPembayaran}</TableCell>
-                  <TableCell align="right">{row.statusBayar}</TableCell>
-                  <TableCell align="right">{row.metodePembayaran}</TableCell>
-                  <TableCell align="right">{row.statusTransaksi}</TableCell>
-                  <TableCell align="right">{row.tanggalPembayaran}</TableCell>
+                  <TableCell align="left">{row.user_email}</TableCell>
+                  <TableCell align="left">{row.product_code}</TableCell>
+                  <TableCell style={{ color: "#396EB0" }} align="left">{row.total_price}</TableCell>
+                  <TableCell align="center">
+                    <div className={`${success ? "paid" : pending ? "pending" : "cancel"}`}>
+                      {row.xendit_status}
+                    </div>
+                  </TableCell>
+                  <TableCell align="left">{row.xendit_payment_channel}</TableCell>
+                  <TableCell align="center">
+                    <div className={`${success ? "paid" : pending ? "pending" : "cancel"}`}>
+                      {row.status}
+                    </div>
+                  </TableCell>
+                  <TableCell style={{ color: "#396EB0" }} align="left">{moment(row.created).subtract(10, "days").calendar()}</TableCell>
+                  <TableCell
+                    align="left"
+                  >
+                    <Image
+                      src={require("../../assets/icons/titiktiga.png")}
+                      alt="titiktiga"
+                      onClick={handleClick}
+                      className='image'
+                    />
+                  </TableCell>
                 </TableRow>
               ))}
+              <Menu
+                id="basic-menu"
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleClose}
+                MenuListProps={{
+                  'aria-labelledby': 'basic-button',
+                }}
+              >
+                <MenuItem onClick={closeMenu}>Edit</MenuItem>
+              </Menu>
+              <Modal
+                size="md"
+                aria-labelledby="contained-modal-title-vcenter"
+                centered
+                show={modalShow}
+                backdrop="static"
+                keyboard={false}
+                className="modal"
+              >
+                <Modal.Header>
+                  <Modal.Title id="contained-modal-title-vcenter">
+                    Ubah <span style={{ color: "#396EB0" }}>Status Transaksi</span>
+                  </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                  <Form>
+                    <h6>Status</h6>
+                    <Form.Select style={{ width: "130px" }} aria-label="Default select example">
+                      <option>Pilih Disini</option>
+                      <option value="1">Success</option>
+                      <option value="2">Pending</option>
+                      <option value="3">Cancel</option>
+                    </Form.Select>
+                  </Form>
+                </Modal.Body>
+                <Modal.Footer>
+                  <Button style={{ backgroundColor: "#396EB0", border: "0" }} variant="primary">Simpan</Button>
+                  <Button style={{ border: "0" }} variant="danger" onClick={() => setModalShow(false)}>Close</Button>
+                </Modal.Footer>
+              </Modal>
             </TableBody>
           </Table>
         </TableContainer>
       </Container>
-
     </>
   )
 }
