@@ -39,7 +39,8 @@ import DailyModal from "./DailyModal";
 import Cookies from "js-cookie";
 
 import EntertainmentModal from "./EntertaimentModal";
-import "../../assets/styles/ProdukBaru.css";
+import styles from "../../assets/styles/Products.module.css"
+import EntertainmentEditModal from "./EntertainmentEditModal";
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
@@ -87,7 +88,7 @@ function applySortFilter(array, comparator, query) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-export default function UserPage() {
+export default function Entertainment() {
   const [open, setOpen] = useState(false);
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState("asc");
@@ -355,7 +356,7 @@ export default function UserPage() {
           },
         }}
       >
-        <DailyModal id={currentID} />
+        <EntertainmentEditModal id={currentID} />
 
         <MenuItem sx={{ color: "error.main" }} onClick={(e) => handleDelete(e)}>
           <Iconify icon={"eva:trash-2-outline"} sx={{ mr: 2 }} />
