@@ -18,7 +18,7 @@ import {
 import useResponsive from "../../../hooks/useResponsive";
 // components
 // import Logo from "../../../components/Admin-Component/logo/Logo";
-import Logo from '../../../assets/icons/logo.png'
+import Logo from "../../../assets/icons/logo.png";
 import Scrollbar from "../../../components/Admin-Component/scrollbar";
 import NavSection from "../../../components/Admin-Component/nav-section";
 //
@@ -46,7 +46,6 @@ Nav.propTypes = {
 
 export default function Nav({ openNav, onCloseNav }) {
   const admin = useSelector((state) => state?.UserSlice?.admin);
-  // console.log(admin)
 
   const { pathname } = useLocation();
 
@@ -56,7 +55,6 @@ export default function Nav({ openNav, onCloseNav }) {
     if (openNav) {
       onCloseNav();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
   const renderContent = (
@@ -71,8 +69,14 @@ export default function Nav({ openNav, onCloseNav }) {
         },
       }}
     >
-      <Box sx={{ px: 2.5, py: 3, display: "inline-flex" }}>
-        <img src={Logo} alt="Logo PayOll" style={{ height: "100px", marginInline: 'auto' }} />
+      <Box
+        sx={{ px: 2.5, py: 3, display: "inline-flex", backgroudColor: "red" }}
+      >
+        <img
+          src={Logo}
+          alt="Logo PayOll"
+          style={{ height: "100px", marginInline: "auto" }}
+        />
       </Box>
 
       <Box sx={{ mb: 5, mx: 2.5 }}>
