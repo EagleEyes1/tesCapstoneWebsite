@@ -8,6 +8,7 @@ import Iconify from "../../Admin-Component/iconify/Iconify";
 import Form from "react-bootstrap/Form";
 
 import AxiosInstance from "../../../configs/axios/AxiosInstance";
+import Swal from "sweetalert2";
 
 import "../../../assets/styles/modalUser.css";
 
@@ -27,7 +28,6 @@ const style = {
 
 const BillsEditModal = ({ id, setUpdate, update, setOpen }) => {
   const [opens, setOpens] = React.useState(false);
-  // const [anchorEl, setAnchorEl] = React.useState(null);
   const [isChecked, setChecked] = useState();
   const [product, setproduct] = useState({});
 
@@ -41,7 +41,7 @@ const BillsEditModal = ({ id, setUpdate, update, setOpen }) => {
         Authorization: "Bearer " + token,
       },
     }).then((res) => {
-      console.log(res)
+      console.log(res);
       setproduct(res.data.data);
       setChecked(res.data.data.status === "active" ? true : false);
     });
@@ -67,9 +67,25 @@ const BillsEditModal = ({ id, setUpdate, update, setOpen }) => {
       const response = await AxiosInstance.put(`/product/${data}`, product);
       setUpdate(!update);
       setOpen(false);
-      // setAnchorEl(null);
+      Swal.fire("Good job!", "You clicked the button!", "success");
       return response;
-    } catch (err) { }
+    } catch (err) {}
+  };
+
+  const resetData = () => {
+    setproduct({
+      icon_url: "",
+      code: "",
+      description: "",
+      status: "Not Active",
+      nominal: "",
+      category: "",
+      price: "",
+      type: "daily",
+      detail: "Detail Here",
+      period: 0,
+    });
+    setChecked(false);
   };
 
   return (
@@ -117,7 +133,6 @@ const BillsEditModal = ({ id, setUpdate, update, setOpen }) => {
                     name="icon_url"
                     value={product?.icon_url}
                     type="text"
-                  // placeholder={product?.icon_url}
                   />
                 </Form.Group>
 
@@ -128,7 +143,6 @@ const BillsEditModal = ({ id, setUpdate, update, setOpen }) => {
                     name="code"
                     value={product?.code}
                     type="text"
-                  // placeholder={product?.code}
                   />
                 </Form.Group>
                 <Form.Group className="mb-1" controlId="formBasicPassword">
@@ -138,7 +152,6 @@ const BillsEditModal = ({ id, setUpdate, update, setOpen }) => {
                     name="description"
                     value={product?.description}
                     type="text"
-                  // placeholder={product?.description}
                   />
                 </Form.Group>
                 <Form.Group className="mb-2" controlId="formBasicEmail">
@@ -161,7 +174,6 @@ const BillsEditModal = ({ id, setUpdate, update, setOpen }) => {
                     name="nominal"
                     value={product?.nominal}
                     type="text"
-                  // placeholder={product?.nominal}
                   />
                 </Form.Group>
                 <Form.Group className="mb-2" controlId="formBasicPassword">
@@ -172,11 +184,9 @@ const BillsEditModal = ({ id, setUpdate, update, setOpen }) => {
                     style={{ width: "130px" }}
                     aria-label="Default select example"
                     value={product?.category}
-                  // onSelect={product?.category}
                   >
                     <option value="token">Token</option>
                     <option value="Tagihan Air">Tagihan Air</option>
-                    {/* <option value="Internet & Tv">Internet & Tv</option> */}
                     <option value="Pendidikan">Pendidikan</option>
                   </Form.Select>
                 </Form.Group>
@@ -190,7 +200,11 @@ const BillsEditModal = ({ id, setUpdate, update, setOpen }) => {
                   />
                 </Form.Group>
                 <div className="d-flex justify-content-center align-items-center mt-4">
-                  <button type="button" class="btn TombolReset">
+                  <button
+                    type="button"
+                    class="btn TombolReset"
+                    onClick={resetData}
+                  >
                     Ulangi
                   </button>
                   <button
